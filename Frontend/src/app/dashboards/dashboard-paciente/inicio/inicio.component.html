@@ -1,0 +1,50 @@
+<div class="flex min-h-screen bg-gradient-to-r from-indigo-50 via-white to-blue-100">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-white shadow-lg p-6 rounded-r-3xl">
+    <h2 class="text-2xl font-bold text-indigo-700 mb-8 text-center">🧑 Usuario</h2>
+    <nav class="flex flex-col gap-4">
+      <button (click)="seccion = 'cita'" class="p-3 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium transition">📅 Pedir Cita</button>
+      <button (click)="seccion = 'diagnosticos'" class="p-3 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium transition">🧠 Diagnósticos</button>
+      <button (click)="seccion = 'autorizaciones'" class="p-3 rounded-xl bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-medium transition">✅ Autorizaciones</button>
+    </nav>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="flex-1 p-10 overflow-y-auto">
+
+    <!-- Pedir Cita -->
+    <section *ngIf="seccion === 'cita'" class="max-w-xl mx-auto">
+      <app-citas></app-citas>
+    </section>
+
+    <!-- Diagnósticos -->
+    <section *ngIf="seccion === 'diagnosticos'" class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-indigo-700 mb-6">🧠 Diagnósticos</h2>
+      <div class="space-y-4">
+        <div class="bg-white rounded-xl shadow p-4" *ngFor="let d of diagnosticos">
+          <p class="text-lg font-semibold text-indigo-800">{{ d.descripcion }}</p>
+          <p class="text-sm text-gray-600">Fecha: {{ d.fecha }}</p>
+          <p class="text-sm text-gray-500">Médico: {{ d.medico }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Autorizaciones -->
+    <section *ngIf="seccion === 'autorizaciones'" class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-bold text-indigo-700 mb-6">✅ Autorizaciones Médicas</h2>
+      <ul class="space-y-3">
+        <li class="bg-white p-4 rounded-xl shadow" *ngFor="let a of autorizaciones">
+          <p class="text-lg text-gray-800 font-semibold">{{ a.servicio }}</p>
+          <p class="text-sm text-gray-600">Estado: 
+            <span [ngClass]="{
+              'text-green-600': a.estado === 'Autorizado',
+              'text-red-600': a.estado === 'Rechazado',
+              'text-yellow-600': a.estado === 'Pendiente'
+            }">{{ a.estado }}</span>
+          </p>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+</div>

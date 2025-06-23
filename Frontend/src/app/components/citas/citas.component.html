@@ -1,0 +1,42 @@
+<div class="max-w-xl mx-auto p-6 rounded-2xl shadow-lg bg-white/30 backdrop-blur-md border border-white/20">
+  <h2 class="text-3xl font-bold mb-6 text-blue-700 text-center drop-shadow">🩺 Crear Consulta Médica</h2>
+
+  <form [formGroup]="consultaForm" (ngSubmit)="enviarConsulta()" class="space-y-6">
+    
+    <!-- Especialidad -->
+    <div>
+      <label class="block text-sm font-semibold text-blue-800 mb-1">Especialidad</label>
+      <select formControlName="especialidad" (change)="filtrarPorEspecialidad()"
+        class="w-full bg-white/30 backdrop-blur-md border border-blue-200 text-blue-900 p-3 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Seleccione una especialidad</option>
+        <option *ngFor="let esp of especialidades" [value]="esp">{{ esp }}</option>
+      </select>
+    </div>
+
+    <!-- Médico -->
+    <div>
+      <label class="block text-sm font-semibold text-blue-800 mb-1">Médico</label>
+      <select formControlName="medicoId"
+        class="w-full bg-white/30 backdrop-blur-md border border-blue-200 text-blue-900 p-3 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Seleccione un médico</option>
+        <option *ngFor="let medico of medicosFiltrados" [value]="medico.idMedico">
+          {{ medico.user.nombre }} - {{ medico.especialidad }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Motivo -->
+    <div>
+      <label class="block text-sm font-semibold text-blue-800 mb-1">Motivo de la Consulta</label>
+      <textarea formControlName="motivo" rows="4"
+        class="w-full bg-white/30 backdrop-blur-md border border-blue-200 text-blue-900 p-3 rounded-xl shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Describa el motivo..."></textarea>
+    </div>
+
+    <!-- Botón -->
+    <button type="submit"
+      class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300">
+      Enviar Consulta
+    </button>
+  </form>
+</div>
