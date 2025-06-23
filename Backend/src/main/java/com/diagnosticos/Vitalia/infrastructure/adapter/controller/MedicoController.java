@@ -49,4 +49,6 @@ public class MedicoController {
     public ResponseEntity<MedicoEntity> obtenerPorCedula(@PathVariable String cedula) {
         return ResponseEntity.ok(medicoService.obtenerPorCedula(cedula));
     }
+
+
 }

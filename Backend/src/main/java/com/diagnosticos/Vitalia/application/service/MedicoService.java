@@ -56,28 +56,42 @@ public class MedicoService {
         return medicoRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Médico no encontrado con id: " + id));
     }
-    
+
 
     public void actualizarMedico(Long id, ActualizarMedicoDTO dto) {
-        MedicoEntity medico = medicoRepo.findById(id)
+        UserEntity user = userRepo.findById(id)
+                .filter(u -> "MEDICO".equals(u.getRol()))
                 .orElseThrow(() -> new IllegalArgumentException("Médico no encontrado con id: " + id));
 
-        UserEntity user = medico.getUser();
+        // Actualizar campos del usuario
         user.setNombre(dto.getNombre());
-        user.setCedula(dto.getCedula());
         user.setCorreo(dto.getCorreo());
+        user.setCedula(dto.getCedula());
+        userRepo.save(user);
+
+        // Buscar y actualizar MedicoEntity
+        MedicoEntity medico = medicoRepo.findByUserId(id)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró la información médica"));
 
         medico.setEspecialidad(dto.getEspecialidad());
         medico.setRegistroProfesional(dto.getRegistroProfesional());
-
-        userRepo.save(user);
         medicoRepo.save(medico);
     }
 
+
     public void eliminarMedico(Long id) {
-        if (!medicoRepo.existsById(id)) {
-            throw new IllegalArgumentException("Médico no encontrado con id: " + id);
-        }
-        medicoRepo.deleteById(id);
+        UserEntity user = userRepo.findById(id)
+                .filter(u -> "MEDICO".equals(u.getRol()))
+                .orElseThrow(() -> new IllegalArgumentException("Médico no encontrado con id: " + id));
+
+        // Eliminar primero MedicoEntity
+        medicoRepo.findByUserId(id).ifPresent(medicoRepo::delete);
+
+        // Luego eliminar el usuario
+        userRepo.deleteById(id);
     }
+
+
+
+
 }

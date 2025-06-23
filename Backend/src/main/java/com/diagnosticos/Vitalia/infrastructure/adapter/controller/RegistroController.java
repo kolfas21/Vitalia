@@ -1,5 +1,6 @@
 package com.diagnosticos.Vitalia.infrastructure.adapter.controller;
 
+import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.ActualizarMedicoDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.PacienteDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.MedicoDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.PacienteEntity;
@@ -65,6 +66,33 @@ public class RegistroController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PutMapping("/medico/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> actualizarMedico(
+            @PathVariable Long id,
+            @RequestBody ActualizarMedicoDTO dto) {
+        try {
+            medicoService.actualizarMedico(id, dto);
+            return ResponseEntity.ok("✅ Médico actualizado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("❌ " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/medico/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> eliminarMedico(@PathVariable Long id) {
+        try {
+            medicoService.eliminarMedico(id);
+            return ResponseEntity.ok("✅ Médico eliminado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("❌ " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("❌ Error al eliminar médico: " + e.getMessage());
+        }
+    }
+
 
 
 }
