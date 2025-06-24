@@ -46,6 +46,8 @@ public class PacienteService {
         paciente.setActividadFisica(dto.getActividadFisica());
         paciente.setPeso(dto.getPeso());
         paciente.setEstatura(dto.getEstatura());
+        paciente.setAlergias(dto.getAlergias());
+        paciente.setSintomas(dto.getSintomas());
 
         pacienteRepo.save(paciente);
     }

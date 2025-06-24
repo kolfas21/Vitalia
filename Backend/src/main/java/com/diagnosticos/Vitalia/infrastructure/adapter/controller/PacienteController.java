@@ -2,12 +2,16 @@ package com.diagnosticos.Vitalia.infrastructure.adapter.controller;
 
 import com.diagnosticos.Vitalia.application.service.PacienteService;
 import com.diagnosticos.Vitalia.application.service.UserService;
+import com.diagnosticos.Vitalia.domain.repository.PacienteRepository;
+import com.diagnosticos.Vitalia.domain.repository.UserRepository;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.ActualizarInfoMedicaDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.PacienteDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.ActualizarPacienteDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.PacienteEntity;
+import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,12 +23,21 @@ public class PacienteController {
 
     private final PacienteService pacienteService;
     private final UserService userService;
+    private final UserRepository userRepo;
+    private final PacienteRepository pacienteRepo;
+    private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/registrar")
-    public ResponseEntity<String> registrar(@RequestBody PacienteDTO dto) {
-        pacienteService.registrarPaciente(dto);
-        return ResponseEntity.ok("✅ Paciente registrado correctamente");
+    @PostMapping("/paciente")
+    public ResponseEntity<String> registrarPaciente(@RequestBody PacienteDTO dto) {
+        try {
+            pacienteService.registrarPaciente(dto); // ✅ Usa la lógica centralizada que sí guarda alergias y síntomas
+            return ResponseEntity.xok("✅ Paciente registrado correctamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
+
+
 
     @GetMapping
     public ResponseEntity<List<PacienteEntity>> obtenerTodos() {
