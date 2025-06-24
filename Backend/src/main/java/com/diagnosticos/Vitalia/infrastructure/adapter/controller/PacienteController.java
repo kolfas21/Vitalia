@@ -1,6 +1,8 @@
 package com.diagnosticos.Vitalia.infrastructure.adapter.controller;
 
 import com.diagnosticos.Vitalia.application.service.PacienteService;
+import com.diagnosticos.Vitalia.application.service.UserService;
+import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.ActualizarInfoMedicaDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.PacienteDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.ActualizarPacienteDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.PacienteEntity;
@@ -16,6 +18,7 @@ import java.util.List;
 public class PacienteController {
 
     private final PacienteService pacienteService;
+    private final UserService userService;
 
     @PostMapping("/registrar")
     public ResponseEntity<String> registrar(@RequestBody PacienteDTO dto) {
@@ -43,5 +46,11 @@ public class PacienteController {
     public ResponseEntity<String> eliminar(@PathVariable Long id) {
         pacienteService.eliminarPaciente(id);
         return ResponseEntity.ok("✅ Paciente eliminado correctamente");
+    }
+
+    @PutMapping("/{id}/info-medica")
+    public ResponseEntity<String> actualizarInfoMedica(@PathVariable Long id, @RequestBody ActualizarInfoMedicaDTO dto) {
+        userService.actualizarInfoMedica(id, dto);
+        return ResponseEntity.ok("Información médica del paciente actualizada");
     }
 }

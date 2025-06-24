@@ -35,10 +35,18 @@ public class UserController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-    @PutMapping("/{id}/info-medica")
-    public ResponseEntity<String> actualizarInfoMedica(@PathVariable Long id, @RequestBody ActualizarInfoMedicaDTO dto) {
-        userService.actualizarInfoMedica(id, dto);
-        return ResponseEntity.ok("Información médica del paciente actualizada");
+
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<?> actualizarUsuario(
+            @PathVariable Long id,
+            @RequestBody UserEntity datosActualizados
+    ) {
+        try {
+            UserEntity usuarioActualizado = userService.actualizarUsuario(id, datosActualizados);
+            return ResponseEntity.ok(usuarioActualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping
@@ -46,11 +54,32 @@ public class UserController {
         List<UserEntity> usuarios = userService.obtenerTodosLosUsuarios();
         return ResponseEntity.ok(usuarios);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<UserEntity> obtenerUsuarioPorId(@PathVariable Long id) {
         return userService.obtenerUsuarioPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/cedula/{cedula}")
+    public ResponseEntity<UserEntity> obtenerUsuarioPorCedula(@PathVariable String cedula) {
+        return userService.obtenerUsuarioPorCedula(cedula)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
+        try {
+            UserEntity usuarioEliminado = userService.eliminarUsuario(id);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "✅ Usuario eliminado correctamente",
+                    "usuario", usuarioEliminado
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
 }

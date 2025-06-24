@@ -29,7 +29,13 @@ public class SecurityConfig {
                 .cors(cors -> {}) // Habilita el bean de CORS
                 .csrf(csrf -> csrf.disable()) // Desactiva CSRF porque es una API
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/usuarios/registrar").permitAll() // Permite acceso público
+                        .requestMatchers("/api/usuarios/registrar").permitAll()
+                        .requestMatchers("/api/usuarios").permitAll() // Permite acceso público
+                        .requestMatchers("/api/usuarios/cedula/**").permitAll()
+                        .requestMatchers("/api/usuarios/actualizar/**").permitAll()
+                        .requestMatchers("/api/usuarios/eliminar/**").permitAll()
+
+
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/registro/paciente").permitAll()
                         .requestMatchers("/api/registro/medico").hasRole("ADMIN")

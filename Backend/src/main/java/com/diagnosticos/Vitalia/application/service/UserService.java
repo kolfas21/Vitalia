@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.List;
 
-
 @Service
 public class UserService {
 
@@ -68,27 +67,60 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public void actualizarUsuario(Long id, UserEntity datosActualizados) {
+    public Optional<UserEntity> obtenerUsuarioPorCedula(String cedula) {
+        return userRepository.findByCedula(cedula);
+    }
+
+    public UserEntity actualizarUsuario(Long id, UserEntity datosActualizados) {
         UserEntity usuario = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + id));
+
+        if (!"PACIENTE".equalsIgnoreCase(usuario.getRol())) {
+            throw new IllegalArgumentException("❌ Solo se pueden actualizar usuarios con rol PACIENTE");
+        }
+
+        // Validar que no se pueda cambiar a otro rol
+        if (!"PACIENTE".equalsIgnoreCase(datosActualizados.getRol())) {
+            throw new IllegalArgumentException("❌ No está permitido cambiar el rol del usuario PACIENTE");
+        }
+
+        // Verificar si otro usuario ya tiene ese correo
+        UserEntity usuarioPorCorreo = userRepository.findByCorreo(datosActualizados.getCorreo());
+        if (usuarioPorCorreo != null && !usuarioPorCorreo.getId().equals(id)) {
+            throw new IllegalArgumentException("❌ Correo ya registrado por otro usuario");
+        }
+
+        // Verificar si otro usuario ya tiene esa cédula
+        userRepository.findByCedula(datosActualizados.getCedula()).ifPresent(u -> {
+            if (!u.getId().equals(id)) {
+                throw new IllegalArgumentException("❌ Cédula ya registrada por otro usuario");
+            }
+        });
 
         usuario.setNombre(datosActualizados.getNombre());
         usuario.setCedula(datosActualizados.getCedula());
         usuario.setCorreo(datosActualizados.getCorreo());
         usuario.setFechaNacimiento(datosActualizados.getFechaNacimiento());
-        usuario.setRol(datosActualizados.getRol());
+        // No se actualiza el rol: usuario.setRol(...)
 
         if (datosActualizados.getContrasena() != null && !datosActualizados.getContrasena().isBlank()) {
             usuario.setContrasena(passwordEncoder.encode(datosActualizados.getContrasena()));
         }
 
-        userRepository.save(usuario);
+        return userRepository.save(usuario);
     }
 
-    public void eliminarUsuario(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new IllegalArgumentException("Usuario no encontrado con id: " + id);
+
+
+    public UserEntity eliminarUsuario(Long id) {
+        UserEntity usuario = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + id));
+
+        if (!"PACIENTE".equalsIgnoreCase(usuario.getRol())) {
+            throw new IllegalArgumentException("❌ Solo se pueden eliminar usuarios con rol PACIENTE");
         }
+
         userRepository.deleteById(id);
+        return usuario;
     }
 }
