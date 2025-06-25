@@ -10,7 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,HttpClientModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule]
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -51,11 +51,16 @@ export class LoginComponent {
         this.rol = response.rol;
         this.id = response.id;
 
-        localStorage.setItem('rol', this.rol);
-        if (this.id !== null) {
-          localStorage.setItem('id', this.id.toString());
-        }
+        // ✅ Guardar en localStorage
+        localStorage.setItem('rol', response.rol);
+        localStorage.setItem('id', response.id.toString());
+        localStorage.setItem('nombre', response.nombre);
+        localStorage.setItem('correo', response.correo);
+        localStorage.setItem('cedula', response.cedula);
+        localStorage.setItem('fechaNacimiento', response.fechaNacimiento);
+        localStorage.setItem('token', response.token);
 
+        // ✅ Redirigir según el rol
         switch (this.rol) {
           case 'PACIENTE':
             this.router.navigate(['dashboards/dashboard-paciente/inicio']);
