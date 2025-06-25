@@ -1,0 +1,239 @@
+<div class="min-h-screen bg-gradient-to-br from-[#f0f5ff] to-[#e6eeff] flex items-center justify-center p-4">
+  <!-- Contenedor principal con efecto líquido -->
+  <div class="relative w-full max-w-6xl rounded-[40px] overflow-hidden shadow-2xl">
+    <!-- Efectos líquidos de fondo -->
+    <div class="absolute inset-0 overflow-hidden z-0">
+      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#e6f0ff] to-[#d9e6ff]"></div>
+      <div class="absolute -top-20 -left-20 w-64 h-64 bg-[#0400ff]/10 rounded-full filter blur-[80px] animate-liquid-float1"></div>
+      <div class="absolute bottom-10 right-10 w-72 h-72 bg-[#029eff]/10 rounded-full filter blur-[90px] animate-liquid-float2"></div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="flex flex-col lg:flex-row w-full relative z-10">
+      <!-- Sección del formulario (60% ancho) -->
+      <div class="lg:w-3/5 w-full p-8 md:p-12 backdrop-blur-sm bg-white/80">
+        <!-- Logo y título -->
+        <div class="flex items-center justify-center mb-8">
+          <img src="icons/logo-vital.png" alt="Vitalia Logo" class="w-10 h-10 mr-4">
+          <h1 class="text-3xl font-bold text-[#0400ff]">VITALIA</h1>
+        </div>
+
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-2">Registro</h2>
+        <p class="text-lg text-gray-600 text-center mb-8">Crea una cuenta para acceder a nuestros servicios</p>
+
+        <!-- Botones de redes sociales -->
+        <div class="flex justify-center gap-4 mb-8">
+          <button class="bg-white text-black border border-gray-300 rounded-full px-6 py-2 flex items-center gap-2 shadow-md hover:shadow-lg transition">
+            <img src="icons/google.png" alt="Google" class="w-5 h-5">
+            <span>Google</span> 
+          </button>
+          <button class="bg-white text-black border border-gray-300 rounded-full p-2 shadow-md hover:shadow-lg transition">
+            <img src="assets/icons/git-icon.png" alt="Git" class="w-5 h-5">
+          </button>
+          <button class="bg-white text-black border border-gray-300 rounded-full p-2 shadow-md hover:shadow-lg transition">
+            <img src="assets/icons/apple-icon.png" alt="Apple" class="w-5 h-5">
+          </button>
+        </div>
+
+        <!-- Línea divisoria -->
+        <div class="flex items-center w-full max-w-md mx-auto my-8">
+          <div class="flex-grow border-t border-gray-300"></div>
+          <span class="mx-4 text-gray-500 font-medium">o registrarse con correo</span>
+          <div class="flex-grow border-t border-gray-300"></div>
+        </div>
+
+        <!-- Formulario -->
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="w-full max-w-4xl mx-auto">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Columna izquierda -->
+            <div class="space-y-6">
+              <!-- Nombre -->
+              <div class="relative">
+                <label for="nombre" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
+                <input formControlName="nombre" type="text" id="nombre" placeholder="Ingresa tu nombre"
+                  [ngClass]="{
+                    'border-green-500': registerForm.get('nombre')?.valid && registerForm.get('nombre')?.touched,
+                    'border-red-500': registerForm.get('nombre')?.invalid && registerForm.get('nombre')?.touched,
+                    'border-gray-300': !registerForm.get('nombre')?.touched
+                  }"
+                  class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm" />
+                <div *ngIf="registerForm.get('nombre')?.touched && registerForm.get('nombre')?.invalid" class="text-red-500 text-sm mt-1">
+                  <div *ngIf="registerForm.get('nombre')?.errors?.['required']">El nombre es obligatorio.</div>
+                  <div *ngIf="registerForm.get('nombre')?.errors?.['minlength']">Mínimo 3 caracteres.</div>
+                </div>
+                <div *ngIf="registerForm.get('nombre')?.valid && registerForm.get('nombre')?.touched" class="text-green-500 text-sm mt-1">
+                  Campo válido.
+                </div>
+              </div>
+
+              <!-- Correo -->
+              <div class="relative">
+                <label for="correo" class="block text-sm font-medium text-gray-700 mb-2">Correo</label>
+                <input formControlName="correo" type="email" id="correo" placeholder="tu@email.com"
+                  [ngClass]="{
+                    'border-green-500': registerForm.get('correo')?.valid && registerForm.get('correo')?.touched,
+                    'border-red-500': registerForm.get('correo')?.invalid && registerForm.get('correo')?.touched,
+                    'border-gray-300': !registerForm.get('correo')?.touched
+                  }"
+                  class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm" />
+                <div *ngIf="registerForm.get('correo')?.touched && registerForm.get('correo')?.invalid" class="text-red-500 text-sm mt-1">
+                  <div *ngIf="registerForm.get('correo')?.errors?.['required']">El correo es obligatorio.</div>
+                  <div *ngIf="registerForm.get('correo')?.errors?.['email']">Correo inválido.</div>
+                </div>
+                <div *ngIf="registerForm.get('correo')?.valid && registerForm.get('correo')?.touched" class="text-green-500 text-sm mt-1">
+                  Correo válido.
+                </div>
+                <div *ngIf="backendErrors['correo']" class="text-red-500 text-sm mt-1">
+                  {{ backendErrors['correo'] }}
+                </div>
+              </div>
+
+              <!-- Contraseña -->
+              <div class="relative">
+                <label for="contrasena" class="block text-sm font-medium text-gray-700 mb-2">Contraseña</label>
+                <input formControlName="contrasena" type="password" id="contrasena" placeholder="••••••••"
+                  [ngClass]="{
+                    'border-green-500': registerForm.get('contrasena')?.valid && registerForm.get('contrasena')?.touched,
+                    'border-red-500': registerForm.get('contrasena')?.invalid && registerForm.get('contrasena')?.touched,
+                    'border-gray-300': !registerForm.get('contrasena')?.touched
+                  }"
+                  class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm" />
+                <div *ngIf="registerForm.get('contrasena')?.touched && registerForm.get('contrasena')?.invalid" class="text-red-500 text-sm mt-1">
+                  <div *ngIf="registerForm.get('contrasena')?.errors?.['required']">La contraseña es obligatoria.</div>
+                  <div *ngIf="registerForm.get('contrasena')?.errors?.['minlength']">Mínimo 6 caracteres.</div>
+                </div>
+                <div *ngIf="registerForm.get('contrasena')?.valid && registerForm.get('contrasena')?.touched" class="text-green-500 text-sm mt-1">
+                  Contraseña válida.
+                </div>
+              </div>
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="space-y-6">
+              <!-- Cédula -->
+              <div class="relative">
+                <label for="cedula" class="block text-sm font-medium text-gray-700 mb-2">Cédula</label>
+                <input formControlName="cedula" type="text" id="cedula" placeholder="Ingresa tu cédula"
+                  [ngClass]="{
+                    'border-green-500': registerForm.get('cedula')?.valid && registerForm.get('cedula')?.touched,
+                    'border-red-500': registerForm.get('cedula')?.invalid && registerForm.get('cedula')?.touched,
+                    'border-gray-300': !registerForm.get('cedula')?.touched
+                  }"
+                  class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm" />
+                <div *ngIf="registerForm.get('cedula')?.touched && registerForm.get('cedula')?.invalid" class="text-red-500 text-sm mt-1">
+                  <div *ngIf="registerForm.get('cedula')?.errors?.['required']">La cédula es obligatoria.</div>
+                  <div *ngIf="registerForm.get('cedula')?.errors?.['pattern']">Debe tener entre 5 y 15 dígitos.</div>
+                </div>
+                <div *ngIf="registerForm.get('cedula')?.valid && registerForm.get('cedula')?.touched" class="text-green-500 text-sm mt-1">
+                  Cédula válida.
+                </div>
+                <div *ngIf="backendErrors['cedula']" class="text-red-500 text-sm mt-1">
+                  {{ backendErrors['cedula'] }}
+                </div>
+              </div>
+
+              <!-- Fecha nacimiento -->
+              <div class="relative">
+                <label for="fechaNacimiento" class="block text-sm font-medium text-gray-700 mb-2">Fecha de Nacimiento</label>
+                <input formControlName="fechaNacimiento" type="date" id="fechaNacimiento"
+                  [ngClass]="{
+                    'border-green-500': registerForm.get('fechaNacimiento')?.valid && registerForm.get('fechaNacimiento')?.touched,
+                    'border-red-500': registerForm.get('fechaNacimiento')?.invalid && registerForm.get('fechaNacimiento')?.touched,
+                    'border-gray-300': !registerForm.get('fechaNacimiento')?.touched
+                  }"
+                  class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm" />
+                <div *ngIf="registerForm.get('fechaNacimiento')?.touched && registerForm.get('fechaNacimiento')?.invalid" class="text-red-500 text-sm mt-1">
+                  La fecha de nacimiento es obligatoria.
+                </div>
+                <div *ngIf="registerForm.get('fechaNacimiento')?.valid && registerForm.get('fechaNacimiento')?.touched" class="text-green-500 text-sm mt-1">
+                  Fecha válida.
+                </div>
+              </div>
+
+              <!-- Género -->
+              <div class="relative">
+                <label for="genero" class="block text-sm font-medium text-gray-700 mb-2">Género</label>
+                <select formControlName="genero" id="genero"
+                  [ngClass]="{
+                    'border-green-500': registerForm.get('genero')?.valid && registerForm.get('genero')?.touched,
+                    'border-red-500': registerForm.get('genero')?.invalid && registerForm.get('genero')?.touched,
+                    'border-gray-300': !registerForm.get('genero')?.touched
+                  }"
+                  class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm">
+                  <option value="">Selecciona tu género</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="femenino">Femenino</option>
+                </select>
+                <div *ngIf="registerForm.get('genero')?.touched && registerForm.get('genero')?.invalid" class="text-red-500 text-sm mt-1">
+                  El género es obligatorio.
+                </div>
+                <div *ngIf="registerForm.get('genero')?.valid && registerForm.get('genero')?.touched" class="text-green-500 text-sm mt-1">
+                  Género válido.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Repetir contraseña -->
+          <div class="mt-6 relative">
+            <label for="repetir-contrasena" class="block text-sm font-medium text-gray-700 mb-2">Repetir Contraseña</label>
+            <input formControlName="repetirContrasena" type="password" id="repetir-contrasena" placeholder="Repite tu contraseña"
+              [ngClass]="{
+                'border-green-500': !registerForm.errors?.['mismatch'] && registerForm.get('repetirContrasena')?.touched,
+                'border-red-500': registerForm.errors?.['mismatch'] && registerForm.get('repetirContrasena')?.touched,
+                'border-gray-300': !registerForm.get('repetirContrasena')?.touched
+              }"
+              class="w-full px-5 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-[#0400ff] focus:border-transparent bg-white/90 transition-all duration-300 shadow-sm" />
+            <div *ngIf="registerForm.get('repetirContrasena')?.touched && registerForm.errors?.['mismatch']" class="text-red-500 text-sm mt-1">
+              Las contraseñas no coinciden.
+            </div>
+            <div *ngIf="!registerForm.errors?.['mismatch'] && registerForm.get('repetirContrasena')?.valid && registerForm.get('repetirContrasena')?.touched" class="text-green-500 text-sm mt-1">
+              Las contraseñas coinciden.
+            </div>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex flex-col md:flex-row justify-center gap-6 mt-10">
+            <button type="submit"
+              class="w-full md:w-[280px] h-14 bg-gradient-to-r from-[#0400ff] to-[#029eff] text-white rounded-xl font-semibold text-lg hover:from-[#029eff] hover:to-[#0400ff] transition-all duration-500 shadow-lg hover:shadow-xl flex items-center justify-center">
+              Registrarse
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <button type="button" (click)="onCancel()"
+              class="w-full md:w-[280px] h-14 bg-white text-[#0400ff] border border-[#0400ff] rounded-xl font-semibold text-lg hover:bg-[#0400ff]/10 transition-all duration-300 shadow hover:shadow-md flex items-center justify-center">
+              Cancelar
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sección de imagen (40% ancho) -->
+<div class="lg:w-2/5 w-full relative min-h-[700px] overflow-hidden">
+  <!-- Imagen con efecto de vidrio esmerilado -->
+  <img src="images/olders.jpg" alt="Adultos mayores" class="w-full h-full object-cover absolute inset-0 z-0" />
+  
+  <!-- Overlay con efecto de vidrio -->
+  <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent backdrop-blur-[1px] flex items-end z-10">
+    <div class="p-8 text-white">
+      <h3 class="text-2xl font-bold mb-2">Tu salud, nuestra prioridad</h3>
+      <p class="text-white/90">Regístrate hoy y comienza a disfrutar de los beneficios de Vitalia</p>
+    </div>
+  </div>
+
+  <!-- Elemento decorativo líquido -->
+  <div class="absolute -top-10 -right-10 w-40 h-40 bg-[#029eff]/20 rounded-full filter blur-[60px] animate-liquid-float3 z-10"></div>
+</div>
+    </div>
+
+ 
+
+
+    
+  </div>
+</div>
+
