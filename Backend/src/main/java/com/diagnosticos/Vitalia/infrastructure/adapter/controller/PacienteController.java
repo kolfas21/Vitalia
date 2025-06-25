@@ -27,7 +27,7 @@ public class PacienteController {
     private final PacienteRepository pacienteRepo;
     private final PasswordEncoder passwordEncoder;
 
-    @PostMapping("/paciente")
+    @PostMapping("/registrar")
     public ResponseEntity<String> registrarPaciente(@RequestBody PacienteDTO dto) {
         try {
             pacienteService.registrarPaciente(dto); // ✅ Usa la lógica centralizada que sí guarda alergias y síntomas
