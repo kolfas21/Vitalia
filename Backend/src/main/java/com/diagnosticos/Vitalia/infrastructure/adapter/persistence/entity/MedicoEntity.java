@@ -10,7 +10,7 @@ public class MedicoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMedico;
-
+    private String nombre;
     private String especialidad;
     private String registroProfesional;
 

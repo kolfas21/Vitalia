@@ -31,7 +31,7 @@ public class PacienteController {
     public ResponseEntity<String> registrarPaciente(@RequestBody PacienteDTO dto) {
         try {
             pacienteService.registrarPaciente(dto); // ✅ Usa la lógica centralizada que sí guarda alergias y síntomas
-            return ResponseEntity.xok("✅ Paciente registrado correctamente");
+            return ResponseEntity.ok("✅ Paciente registrado correctamente");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

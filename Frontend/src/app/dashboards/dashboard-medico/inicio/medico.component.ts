@@ -50,7 +50,7 @@ export class MedicoComponent {
       'Content-Type': 'application/json'
     });
 
-    this.http.post('http://localhost:8080/api/registro/paciente', this.pacienteForm.value, { headers })
+    this.http.post('http://localhost:8080/api/pacientes/registrar', this.pacienteForm.value, { headers })
       .subscribe({
         next: () => {
           this.mensajePaciente = '✅ Paciente registrado correctamente';

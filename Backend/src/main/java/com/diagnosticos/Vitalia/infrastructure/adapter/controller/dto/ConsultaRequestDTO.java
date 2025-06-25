@@ -1,10 +1,15 @@
 package com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.time.LocalDateTime;
+
+@Setter
+@Getter
 public class ConsultaRequestDTO {
-    private Long idPaciente;
+    private Long idUsuario;
     private Long idMedico;
-    // Agrega aquí otros campos necesarios para la consulta
+    private LocalDateTime fechaConsulta;
+
 }

@@ -3,31 +3,42 @@ package com.diagnosticos.Vitalia.infrastructure.adapter.controller;
 import com.diagnosticos.Vitalia.application.service.ConsultaMedicaService;
 import com.diagnosticos.Vitalia.infrastructure.adapter.controller.dto.ConsultaRequestDTO;
 import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.ConsultaMedicaEntity;
-import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.MedicoEntity;
-import com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity.PacienteEntity;
-import com.diagnosticos.Vitalia.domain.repository.ConsultaMedicaRepository;
-import com.diagnosticos.Vitalia.domain.repository.MedicoRepository;
-import com.diagnosticos.Vitalia.domain.repository.PacienteRepository;
-import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/consulta")
-@RequiredArgsConstructor
+@RequestMapping("/api")
 public class ConsultaController {
 
     private final ConsultaMedicaService consultaService;
 
-    @PostMapping
-    public ResponseEntity<?> crearConsulta(@RequestBody ConsultaRequestDTO dto) {
+    public ConsultaController(ConsultaMedicaService consultaService) {
+        this.consultaService = consultaService;
+    }
+
+    @PostMapping("/consulta")
+    public ResponseEntity<?> registrarConsulta(@RequestBody ConsultaRequestDTO request) {
         try {
-            ConsultaMedicaEntity consulta = consultaService.crearConsulta(dto);
-            return ResponseEntity.ok("Consulta creada correctamente con ID: " + consulta.getIdConsulta());
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            ConsultaMedicaEntity consulta = consultaService.crearConsulta(request);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("idConsulta", consulta.getIdConsulta());
+            response.put("nombreMedico", consulta.getMedico().getNombre());
+            response.put("especialidad", consulta.getMedico().getEspecialidad());
+            response.put("fechaConsulta", consulta.getFechaHora());
+
+            return ResponseEntity.ok(response);
+
+        } catch (EntityNotFoundException | IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error inesperado");
         }
     }
+
 }

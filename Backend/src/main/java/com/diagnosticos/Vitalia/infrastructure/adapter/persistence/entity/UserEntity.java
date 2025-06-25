@@ -23,7 +23,7 @@ public class UserEntity {
     private LocalDate fechaNacimiento;
     private String rol;
 
-
-
-    // ... getters y setters
+    // Relación con paciente
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private PacienteEntity paciente;
 }
