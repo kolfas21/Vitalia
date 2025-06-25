@@ -18,8 +18,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO request) {
         try {
-            UserEntity user = authService.login(request.getCorreo(), request.getContrasena());
-            return ResponseEntity.ok(new LoginResponseDTO("✅ Inicio de sesión exitoso", user.getRol(), user.getId()));
+            LoginResponseDTO response = authService.login(request.getCorreo(), request.getContrasena());
+            return ResponseEntity.ok(response);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(401).body(ex.getMessage());
         }

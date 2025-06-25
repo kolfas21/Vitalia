@@ -34,8 +34,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/usuarios/cedula/**").permitAll()
                         .requestMatchers("/api/usuarios/actualizar/**").permitAll()
                         .requestMatchers("/api/usuarios/eliminar/**").permitAll()
-
-
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/registro/paciente").permitAll()
                         .requestMatchers("/api/registro/medico").hasRole("ADMIN")
