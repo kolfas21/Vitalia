@@ -15,4 +15,7 @@ public interface MedicoRepository extends JpaRepository<MedicoEntity, Long> {
     Optional<MedicoEntity> findByUserId(Long userId);
     @Query("SELECT m FROM MedicoEntity m WHERE m.user.cedula = :cedula")
     Optional<MedicoEntity> findByUserCedula(@Param("cedula") String cedula);
+
+
+
 }

@@ -12,4 +12,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     UserEntity findByCorreo(String correo);
     List<UserEntity> findByRol(String rol);
     Optional<UserEntity> findByCedula(String cedula);
+
 }
