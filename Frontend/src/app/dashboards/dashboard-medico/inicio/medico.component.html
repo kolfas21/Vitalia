@@ -1,101 +1,342 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 flex font-sans text-blue-900">
-  <!-- Sidebar -->
-  <aside class="w-64 bg-white/30 backdrop-blur-xl border-r border-white/20 shadow-xl p-6 hidden md:block rounded-tr-3xl rounded-br-3xl">
-    <h1 class="text-3xl font-extrabold text-blue-700 mb-10 text-center tracking-wide">🏥 VitalIA</h1>
-    <nav class="space-y-4">
-      <button (click)="seccion = 'pacientes'" [ngClass]="{ 'bg-blue-200 text-blue-900 font-bold': seccion === 'pacientes' }"
-        class="w-full text-left px-5 py-3 rounded-xl transition hover:bg-blue-100 focus:outline-none">
-        🧑‍⚕️ Pacientes
-      </button>
-      <button (click)="seccion = 'diagnosticos'" [ngClass]="{ 'bg-blue-200 text-blue-900 font-bold': seccion === 'diagnosticos' }"
-        class="w-full text-left px-5 py-3 rounded-xl transition hover:bg-blue-100 focus:outline-none">
-        📋 Citas
-      </button>
-      <button (click)="seccion = 'autorizaciones'" [ngClass]="{ 'bg-blue-200 text-blue-900 font-bold': seccion === 'autorizaciones' }"
-        class="w-full text-left px-5 py-3 rounded-xl transition hover:bg-blue-100 focus:outline-none">
-        ✅ Autorizaciones
-      </button>
-    </nav>
-  </aside>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-50">
+  <!-- Efecto líquido decorativo -->
+  <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-20 -left-20 w-96 h-96 bg-blue-200 rounded-full opacity-20 animate-blob animation-delay-2000 filter blur-3xl"></div>
+    <div class="absolute top-1/3 right-0 w-80 h-80 bg-purple-200 rounded-full opacity-20 animate-blob filter blur-3xl"></div>
+    <div class="absolute bottom-0 left-1/4 w-72 h-72 bg-indigo-200 rounded-full opacity-20 animate-blob animation-delay-4000 filter blur-3xl"></div>
+  </div>
 
-  <!-- Contenido -->
-  <main class="flex-1 p-10 space-y-10">
-    <h2 class="text-4xl font-extrabold text-blue-800 mb-4 border-b-2 pb-2 border-blue-300">
-      Sección: <span class="italic">{{ seccion | titlecase }}</span>
-    </h2>
+  <!-- Botón de cerrar sesión en esquina superior derecha -->
+  <div class="fixed top-4 right-4 z-50">
+    <button (click)="cerrarSesion()" class="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full shadow-md hover:bg-red-50 hover:text-red-600 transition-all border border-gray-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+      </svg>
+      <span class="text-sm font-medium">Cerrar sesión</span>
+    </button>
+  </div>
 
-    <!-- Pacientes -->
-    <section *ngIf="seccion === 'pacientes'" class="space-y-12">
-      <div class="bg-white/40 backdrop-blur-lg rounded-3xl shadow-lg p-8 border border-white/20">
-        <h3 class="text-2xl font-semibold text-blue-700 mb-6">📝 Registrar Paciente</h3>
-        <form [formGroup]="pacienteForm" (ngSubmit)="registrarPaciente()"
-          class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-          <div *ngFor="let field of [
-            { label: 'Nombre', name: 'nombre', type: 'text' },
-            { label: 'Cédula', name: 'cedula', type: 'text' },
-            { label: 'Correo', name: 'correo', type: 'email' },
-            { label: 'Contraseña', name: 'contrasena', type: 'password' },
-            { label: 'Fecha de Nacimiento', name: 'fechaNacimiento', type: 'date' },
-            { label: 'Estado Civil', name: 'estadoCivil', type: 'text' },
-            { label: 'Ocupación', name: 'ocupacion', type: 'text' },
-            { label: 'Actividad Física', name: 'actividadFisica', type: 'text' },
-            { label: 'Peso (kg)', name: 'peso', type: 'number', step: '0.1' },
-            { label: 'Estatura (m)', name: 'estatura', type: 'number', step: '0.01' }
-          ]">
-            <label class="block font-medium text-blue-800 mb-1">{{ field.label }}</label>
-            <input [formControlName]="field.name" [type]="field.type" [step]="field.step || null"
-              class="w-full p-3 rounded-xl border border-blue-200 bg-white/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400" />
-          </div>
-
-          <div>
-            <label class="block font-medium text-blue-800 mb-1">Sexo</label>
-            <select formControlName="sexo"
-              class="w-full p-3 rounded-xl border border-blue-200 bg-white/50 shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-400">
-              <option value="">Seleccionar</option>
-              <option>Masculino</option>
-              <option>Femenino</option>
-            </select>
-          </div>
-
-          <div class="col-span-full text-center mt-6">
-            <button type="submit"
-              class="bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold py-3 px-10 rounded-xl shadow-lg hover:from-blue-700 hover:to-blue-600 transition duration-300 ease-in-out">
-              Registrar Paciente
-            </button>
-          </div>
-
-          <div *ngIf="mensajePaciente" class="col-span-full text-center text-green-600 font-medium">
-            {{ mensajePaciente }}
-          </div>
-        </form>
+  <div class="relative z-10 flex flex-col md:flex-row">
+    <!-- Sidebar para desktop -->
+    <aside class="hidden md:block w-72 bg-white/80 backdrop-blur-lg p-6 shadow-xl h-screen sticky top-0 border-r border-white/20">
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xl">
+          {{ nombre.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">medico</h2>
+          <p class="text-sm text-gray-500">{{ nombre.split(' ')[0] }}</p>
+        </div>
       </div>
 
-      <!-- Lista de pacientes -->
-      <div>
-        <h3 class="text-2xl font-semibold text-blue-700 mb-4">🗂️ Pacientes Registrados</h3>
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <div *ngFor="let paciente of pacientes"
-            class="bg-white/50 backdrop-blur-md border border-white/20 rounded-xl p-4 shadow hover:shadow-xl transition">
-            <p class="text-lg font-bold text-blue-800">{{ paciente.nombre }}</p>
-            <p class="text-sm text-blue-700">Edad: {{ paciente.edad }}</p>
-            <p class="text-sm text-blue-700">Identificación: {{ paciente.cedula }}</p>
+      <!-- Tarjeta de perfil mejorada -->
+      <div class="mb-6 bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-100 to-indigo-100 shadow-md flex items-center justify-center text-indigo-600 font-bold text-2xl border-4 border-white">
+            {{ nombre.charAt(0).toUpperCase() }}
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800 text-lg">{{ nombre }}</h3>
+            <p class="text-sm text-gray-600">{{ rol }}</p>
+          </div>
+        </div>
+        
+        <button 
+          (click)="activarModoEdicion()"
+          class="w-full py-2 bg-indigo-50 text-indigo-600 rounded-lg font-medium hover:bg-indigo-100 transition flex items-center justify-center gap-2 border border-indigo-100"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+          Editar perfil
+        </button>
+      </div>
+
+      <!-- Menú de navegación completo -->
+      <nav class="space-y-2">
+        <button (click)="seccion = 'inicio'" class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:shadow-sm hover:translate-x-1 text-gray-700 hover:text-indigo-600" [ngClass]="{'bg-indigo-100 text-indigo-600 shadow-inner': seccion === 'inicio'}">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <span class="font-medium">Inicio</span>
+        </button>
+        
+        <button (click)="seccion = 'cita'" class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:shadow-sm hover:translate-x-1 text-gray-700 hover:text-indigo-600" [ngClass]="{'bg-indigo-100 text-indigo-600 shadow-inner': seccion === 'cita'}">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <span class="font-medium">Citas</span>
+        </button>
+        
+        <button (click)="seccion = 'diagnosticos'" class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:shadow-sm hover:translate-x-1 text-gray-700 hover:text-indigo-600" [ngClass]="{'bg-indigo-100 text-indigo-600 shadow-inner': seccion === 'diagnosticos'}">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <span class="font-medium">Diagnósticos</span>
+        </button>
+        
+        <button (click)="seccion = 'autorizaciones'" class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:shadow-sm hover:translate-x-1 text-gray-700 hover:text-indigo-600" [ngClass]="{'bg-indigo-100 text-indigo-600 shadow-inner': seccion === 'autorizaciones'}">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <span class="font-medium">Autorizaciones</span>
+        </button>
+
+        <button (click)="seccion = 'medicamentos'" class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:shadow-sm hover:translate-x-1 text-gray-700 hover:text-indigo-600" [ngClass]="{'bg-indigo-100 text-indigo-600 shadow-inner': seccion === 'medicamentos'}">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <span class="font-medium">Medicamentos</span>
+        </button>
+
+        <button (click)="seccion = 'historial'" class="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 hover:bg-indigo-50 hover:shadow-sm hover:translate-x-1 text-gray-700 hover:text-indigo-600" [ngClass]="{'bg-indigo-100 text-indigo-600 shadow-inner': seccion === 'historial'}">
+          <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <span class="font-medium">Historial</span>
+        </button>
+      </nav>
+      
+      <div class="absolute bottom-6 left-6 right-6">
+        <div class="p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl text-white">
+          <h3 class="font-bold text-sm mb-1">¿Necesitas ayuda?</h3>
+          <p class="text-xs opacity-80 mb-2">Estamos aquí para ayudarte con cualquier duda.</p>
+          <button class="text-xs bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition">Contactar soporte</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Modal para edición de perfil (sin fondo oscuro) -->
+    <div *ngIf="modoEditar" class="fixed inset-0 flex items-center justify-center z-50 p-4">
+      <div class="absolute inset-0 bg-white/80 backdrop-blur-sm" (click)="modoEditar = false"></div>
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md transform transition-all z-10 border-2 border-indigo-100">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-800">Editar perfil</h3>
+            <button (click)="modoEditar = false" class="text-gray-400 hover:text-gray-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+              <input 
+                type="text" 
+                [(ngModel)]="editNombre" 
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Nombre completo"
+              >
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+              <input 
+                type="email" 
+                [(ngModel)]="editCorreo" 
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Correo electrónico"
+              >
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cédula</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="editCedula" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  placeholder="Número de cédula"
+                >
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha nacimiento</label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="editFechaNacimiento" 
+                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                >
+              </div>
+            </div>
+          </div>
+          
+          <div class="mt-6 flex justify-end gap-3">
+            <button 
+              (click)="modoEditar = false" 
+              class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
+            >
+              Cancelar
+            </button>
+            <button 
+              (click)="guardarCambios()" 
+              class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Guardar cambios
+            </button>
+          </div>
+          
+          <div *ngIf="mensaje" class="mt-4 p-3 rounded-lg bg-green-50 text-green-700 text-sm">
+            {{ mensaje }}
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Diagnósticos -->
-    <section *ngIf="seccion === 'diagnosticos'">
-      <div class="bg-white/40 backdrop-blur-md rounded-2xl p-6 text-center border border-white/20">
-        <p class="text-lg text-gray-700 italic">Aquí irán los citas del médico.</p>
-      </div>
-    </section>
+    <!-- Contenido principal -->
+    <main class="flex-1 p-6 md:p-8 pb-20 md:pb-8">
+      <!-- Header con botón de búsqueda correctamente posicionado -->
+      <header class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+            <span *ngIf="seccion === 'inicio'" class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Bienvenido a tu Salud</span>
+            <span *ngIf="seccion === 'cita'" class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Gestión de Citas</span>
+            <span *ngIf="seccion === 'diagnosticos'" class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Mis Diagnósticos</span>
+            <span *ngIf="seccion === 'autorizaciones'" class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Autorizaciones Médicas</span>
+            <span *ngIf="seccion === 'medicamentos'" class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Mis Medicamentos</span>
+            <span *ngIf="seccion === 'historial'" class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Historial Médico</span>
+          </h1>
+          <p class="text-gray-500 text-sm md:text-base">Bienvenido a tu panel de medico personal</p>
+        </div>
+        <div class="relative w-full md:w-auto">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <input type="text" class="block w-full md:w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" placeholder="Buscar...">
+        </div>
+      </header>
 
-    <!-- Autorizaciones -->
-    <section *ngIf="seccion === 'autorizaciones'">
-      <div class="bg-white/40 backdrop-blur-md rounded-2xl p-6 text-center border border-white/20">
-        <p class="text-lg text-gray-700 italic">Aquí irán las autorizaciones médicas.</p>
-      </div>
-    </section>
-  </main>
-</div>
+ <section *ngIf="seccion === 'inicio'" class="space-y-8">
+  <!-- Tarjeta de bienvenida personalizada -->
+ 
+</section>
+
+      <!-- Sección de Citas -->
+      <section *ngIf="seccion === 'cita'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/30">
+        <div class="flex justify-between items-center mb-6">
+
+          <app-consultas-medico></app-consultas-medico>
+
+
+          <button (click)="seccion = 'inicio'" class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+          </button>
+        </div>
+        <!-- Contenido de citas... -->
+      </section>
+
+      <!-- Sección de Diagnósticos -->
+      <section *ngIf="seccion === 'diagnosticos'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/30">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Mis diagnósticos</h2>
+          <button (click)="seccion = 'inicio'" class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+          </button>
+        </div>
+        <!-- Contenido de diagnósticos... -->
+      </section>
+
+      <!-- Sección de Autorizaciones -->
+      <section *ngIf="seccion === 'autorizaciones'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/30">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Autorizaciones médicas</h2>
+          <button (click)="seccion = 'inicio'" class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+          </button>
+        </div>
+        <!-- Contenido de autorizaciones... -->
+      </section>
+
+      <!-- Sección de Medicamentos -->
+      <section *ngIf="seccion === 'medicamentos'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/30">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Mis medicamentos</h2>
+          <button (click)="seccion = 'inicio'" class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+          </button>
+        </div>
+        <!-- Contenido de medicamentos... -->
+      </section>
+
+      <!-- Sección de Historial -->
+      <section *ngIf="seccion === 'historial'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/30">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Historial médico</h2>
+          <button (click)="seccion = 'inicio'" class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver
+          </button>
+        </div>
+        <!-- Contenido de historial... -->
+      </section>
+    </main>
+
+        <div class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg z-20 border-t border-gray-200">
+      <nav class="flex justify-around py-2">
+        <button (click)="seccion = 'inicio'" class="p-3 flex flex-col items-center text-xs" [ngClass]="{'text-indigo-600': seccion === 'inicio'}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span>Inicio</span>
+        </button>
+        <button (click)="seccion = 'cita'" class="p-3 flex flex-col items-center text-xs" [ngClass]="{'text-indigo-600': seccion === 'cita'}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>Citas</span>
+        </button>
+        <button (click)="seccion = 'diagnosticos'" class="p-3 flex flex-col items-center text-xs" [ngClass]="{'text-indigo-600': seccion === 'diagnosticos'}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span>Diagnósticos</span>
+        </button>
+        <button (click)="seccion = 'medicamentos'" class="p-3 flex flex-col items-center text-xs" [ngClass]="{'text-indigo-600': seccion === 'medicamentos'}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          <span>Medicamentos</span>
+        </button>
+        <button (click)="seccion = 'historial'" class="p-3 flex flex-col items-center text-xs" [ngClass]="{'text-indigo-600': seccion === 'historial'}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>Historial</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+  </div>

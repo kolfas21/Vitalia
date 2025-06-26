@@ -1,0 +1,36 @@
+<div class="p-4">
+  <h2 class="text-xl font-bold mb-4">Consultas Asignadas</h2>
+
+  <div *ngIf="consultas.length === 0">No hay consultas asignadas.</div>
+
+  <ul class="space-y-3">
+    <li *ngFor="let consulta of consultas" class="p-3 bg-gray-100 rounded shadow">
+      <div>
+        <strong>Paciente:</strong> {{ consulta.nombrePaciente }}<br />
+        <strong>Fecha:</strong> {{ consulta.fechaHora | date:'short' }}
+      </div>
+      <button class="mt-2 px-4 py-1 bg-blue-600 text-white rounded" (click)="verDetalle(consulta.idConsulta)">
+        Ver Detalle
+      </button>
+    </li>
+  </ul>
+
+  <div *ngIf="detalleVisible" class="mt-8 p-4 border rounded bg-white shadow">
+    <h3 class="text-lg font-semibold mb-2">Información Médica</h3>
+    <form [formGroup]="detalleForm" (ngSubmit)="actualizarInfoMedica()">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label>Síntomas</label><input class="w-full border p-1" formControlName="sintomas" /></div>
+        <div><label>Alergias</label><input class="w-full border p-1" formControlName="alergias" /></div>
+        <div><label>Actividad Física</label><input class="w-full border p-1" formControlName="actividadFisica" /></div>
+        <div><label>Ocupación</label><input class="w-full border p-1" formControlName="ocupacion" /></div>
+        <div><label>Peso (kg)</label><input type="number" class="w-full border p-1" formControlName="peso" /></div>
+        <div><label>Estatura (cm)</label><input type="number" class="w-full border p-1" formControlName="estatura" /></div>
+      </div>
+
+      <div class="mt-4 space-x-2">
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Actualizar</button>
+        <button type="button" class="px-4 py-2 bg-gray-400 text-white rounded" (click)="cerrarDetalle()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>

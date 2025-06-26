@@ -7,6 +7,7 @@ import {MedicoComponent} from '../../../components/medicos/medico.component';
 import{PacienteComponent} from '../../../components/paciente/paciente.component';
 
 
+
 @Component({
   selector: 'app-inicio-admin',
   standalone: true,
