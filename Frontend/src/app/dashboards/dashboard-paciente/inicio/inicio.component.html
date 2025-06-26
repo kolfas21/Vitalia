@@ -471,7 +471,9 @@
       <!-- Sección de Citas -->
       <section *ngIf="seccion === 'cita'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/30">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold text-gray-800">Próximas citas</h2>
+
+
+<app-consulta-medica></app-consulta-medica>
           <button (click)="seccion = 'inicio'" class="flex items-center gap-1 text-indigo-600 hover:text-indigo-800">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

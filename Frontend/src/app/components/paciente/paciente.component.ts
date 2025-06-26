@@ -7,16 +7,15 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-paciente',
   standalone: true,
-imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule, NgForOf], 
- templateUrl: './paciente.component.html',
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule, NgForOf, NgIf],
+  templateUrl: './paciente.component.html',
 })
 export class PacienteComponent implements OnInit {
-  pacienteForm: FormGroup;
   pacientes: any[] = [];
   cedulaBusqueda: string = '';
   apiUrl = 'http://localhost:8080/api/usuarios';
-  editando = false; // se mantiene, pero no se usa por ahora
-  idEditando: number | null = null;
+  mensaje: string = '';
+  error: string = '';
 
   headers = {
     headers: new HttpHeaders({
@@ -24,23 +23,29 @@ export class PacienteComponent implements OnInit {
     })
   };
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
-    this.pacienteForm = this.fb.group({
-      nombre: ['', Validators.required],
-      cedula: ['', Validators.required],
-      correo: ['', [Validators.required, Validators.email]],
-      fechaNacimiento: [''],
-      rol: ['PACIENTE'],
-    });
-  }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.obtenerPacientes();
   }
 
   obtenerPacientes() {
-    this.http.get<any[]>(this.apiUrl, this.headers).subscribe(data => {
-      this.pacientes = data.filter(p => p.rol === 'PACIENTE');
+    this.http.get<any[]>(this.apiUrl, this.headers).subscribe({
+      next: data => {
+        this.pacientes = data
+          .filter(p => p.rol === 'PACIENTE')
+          .map(p => ({
+            id: p.id,
+            nombre: p.nombre,
+            cedula: p.cedula,
+            correo: p.correo,
+            fechaNacimiento: p.fechaNacimiento,
+            rol: p.rol
+          }));
+        this.mensaje = '';
+        this.error = '';
+      },
+      error: () => this.error = '❌ Error al obtener los pacientes'
     });
   }
 
@@ -48,16 +53,26 @@ export class PacienteComponent implements OnInit {
     const cedula = this.cedulaBusqueda.trim();
     if (!cedula) return;
 
-    this.http.get<any>(`${this.apiUrl}/obtenerPacientePorCedula/${cedula}`, this.headers).subscribe({
+    this.http.get<any>(`${this.apiUrl}/cedula/${cedula}`, this.headers).subscribe({
       next: paciente => {
         if (paciente.rol === 'PACIENTE') {
-          this.pacientes = [paciente];
+          this.pacientes = [{
+            id: paciente.id,
+            nombre: paciente.nombre,
+            cedula: paciente.cedula,
+            correo: paciente.correo,
+            fechaNacimiento: paciente.fechaNacimiento,
+            rol: paciente.rol
+          }];
+          this.mensaje = '';
+          this.error = '';
         } else {
-          alert('⚠️ No es un paciente.');
+          this.error = '⚠️ El usuario no es un paciente';
+          this.obtenerPacientes();
         }
       },
       error: () => {
-        alert('❌ Paciente no encontrado');
+        this.error = '❌ Paciente no encontrado';
         this.obtenerPacientes();
       }
     });
@@ -65,8 +80,15 @@ export class PacienteComponent implements OnInit {
 
   eliminar(id: number) {
     if (confirm('¿Estás seguro de eliminar este paciente?')) {
-      this.http.delete(`${this.apiUrl}/${id}`, this.headers).subscribe(() => {
-        this.obtenerPacientes();
+      this.http.delete(`${this.apiUrl}/eliminar/${id}`, this.headers).subscribe({
+        next: () => {
+          this.mensaje = '✅ Paciente eliminado correctamente';
+          this.error = '';
+          this.obtenerPacientes();
+        },
+        error: err => {
+          this.error = err.error?.error || '❌ Error al eliminar paciente';
+        }
       });
     }
   }

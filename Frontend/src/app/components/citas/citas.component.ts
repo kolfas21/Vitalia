@@ -1,76 +1,62 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, effect, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 @Component({
+  selector: 'app-consulta-medica',
   standalone: true,
-  selector: 'app-citas',
+  imports: [CommonModule, HttpClientModule, FormsModule],
   templateUrl: './citas.component.html',
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule] // ✅ Soluciona el error
 })
-export class CitasComponent implements OnInit {
-  consultaForm: FormGroup;
-  medicos: any[] = [];
-  medicosFiltrados: any[] = [];
-  especialidades: string[] = [];
-
-  constructor(private fb: FormBuilder, private http: HttpClient) {
-    this.consultaForm = this.fb.group({
-      especialidad: ['', Validators.required],
-      medicoId: ['', Validators.required],
-      motivo: ['', Validators.required]
-    });
+export class CitasMedicaComponent {
+  constructor(private http: HttpClient) {
+    this.cargarMedicos();
   }
 
-  ngOnInit(): void {
-    this.obtenerMedicos();
-  }
+  medicos = signal<any[]>([]);
+  especialidades = computed(() => [...new Set(this.medicos().map(m => m.especialidad))]);
+  especialidadSeleccionada = signal('');
+  medicosFiltrados = computed(() =>
+    this.medicos().filter(m => m.especialidad === this.especialidadSeleccionada())
+  );
+  medicoSeleccionado = signal<any | null>(null);
 
-  obtenerMedicos() {
+  fechaSeleccionada = signal<string>('');
+  horaSeleccionada = signal<string>('');
+  estadoConsulta = signal<string>('');
+
+  horasDisponibles = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00']; // Horas fijas para el ejemplo
+
+  cargarMedicos() {
     this.http.get<any[]>('http://localhost:8080/api/medicos').subscribe({
-      next: (data) => {
-        this.medicos = data;
-        this.especialidades = [...new Set(data.map(m => m.especialidad))];
-      },
-      error: (err) => console.error('Error obteniendo médicos:', err)
+      next: data => this.medicos.set(data),
+      error: err => console.error('Error cargando médicos:', err),
     });
   }
 
-  filtrarPorEspecialidad() {
-    const especialidadSeleccionada = this.consultaForm.get('especialidad')?.value;
-    this.medicosFiltrados = this.medicos.filter(m => m.especialidad === especialidadSeleccionada);
-  }
-
-  enviarConsulta() {
-    if (this.consultaForm.invalid) {
-      this.consultaForm.markAllAsTouched();
+  solicitarConsulta() {
+    if (!this.fechaSeleccionada() || !this.horaSeleccionada() || !this.medicoSeleccionado()) {
+      this.estadoConsulta.set('⚠️ Por favor, seleccione médico, fecha y hora.');
       return;
     }
 
-    const idUsuario = localStorage.getItem('id');
-    if (!idUsuario) {
-      alert('⚠️ No hay usuario autenticado.');
-      return;
-    }
+    const fechaHora = `${this.fechaSeleccionada()}T${this.horaSeleccionada()}:00`;
 
-    const consultaDTO = {
-      idPaciente: Number(idUsuario),
-      idMedico: Number(this.consultaForm.value.medicoId),
-      motivo: this.consultaForm.value.motivo
+    const body = {
+      idUsuario: Number(localStorage.getItem('userId')), // debes tener el ID guardado localmente
+      idMedico: this.medicoSeleccionado().idMedico,
+      fechaConsulta: fechaHora,
     };
 
-    this.http.post('http://localhost:8080/api/usuarios/consulta', consultaDTO).subscribe({
-      next: (res) => {
-        alert('✅ Consulta enviada correctamente');
-        this.consultaForm.reset();
+    this.http.post('http://localhost:8080/api/consulta', body).subscribe({
+      next: (resp: any) => {
+        this.estadoConsulta.set(`✅ Consulta registrada: ${resp.nombrePaciente} con ${resp.nombreMedico} el ${new Date(resp.fechaConsulta).toLocaleString()}`);
       },
-      error: (err) => {
-        console.error('❌ Error al enviar consulta:', err);
-        alert('❌ Error al enviar consulta');
+      error: err => {
+        console.error(err);
+        this.estadoConsulta.set('❌ Error al registrar la consulta.');
       }
     });
   }
 }
-
-

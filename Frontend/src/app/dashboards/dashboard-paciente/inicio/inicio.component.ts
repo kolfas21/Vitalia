@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { NgIf } from '@angular/common';
+import {CitasMedicaComponent} from '../../../components/citas/citas.component';
 
 
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgIf, HttpClientModule],
+  imports: [CommonModule, FormsModule, NgIf, HttpClientModule, CitasMedicaComponent],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css'
 })
