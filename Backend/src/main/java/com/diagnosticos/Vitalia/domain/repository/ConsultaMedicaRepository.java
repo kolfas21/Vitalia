@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ConsultaMedicaRepository extends JpaRepository<ConsultaMedicaEntity, Long> {
     boolean existsByMedicoAndFechaHora(MedicoEntity medico, LocalDateTime fechaHora);
-    List<ConsultaMedicaEntity> findByMedico_Id(Long idMedico);
+    List<ConsultaMedicaEntity> findByMedico_Id(Long id);
 }

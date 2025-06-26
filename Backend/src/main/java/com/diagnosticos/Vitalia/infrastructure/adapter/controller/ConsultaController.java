@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class ConsultaController {
 
-    private final ConsultaMedicaService consultaService;
+    private final ConsultaMedicaService  consultaService;
     private final PacienteService pacienteService;
 
     public ConsultaController(ConsultaMedicaService consultaService, PacienteService pacienteService) {
@@ -73,10 +73,9 @@ public class ConsultaController {
         }
     }
 
-    @GetMapping("/consulta/medico/{idMedico}")
-    public ResponseEntity<?> obtenerConsultasPorMedico(@PathVariable Long idMedico) {
-        try {
-            var consultas = consultaService.buscarConsultasPorMedico(idMedico);
+    @GetMapping("/consulta/medico/{idUsuario}")
+    public ResponseEntity<?> obtenerConsultasPorUsuarioDeMedico(@PathVariable Long idUsuario){        try {
+            var consultas = consultaService.buscarConsultasPorUsuarioDeMedico(idUsuario);
 
             var respuesta = consultas.stream().map(consulta -> new ConsultaResponseDTO(
                     consulta.getIdConsulta(),

@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ConsultaMedicaService {
     ConsultaMedicaEntity crearConsulta(ConsultaRequestDTO dto);
     Optional<ConsultaMedicaEntity> buscarPorId(Long idConsulta);
-    List<ConsultaMedicaEntity> buscarConsultasPorMedico(Long idMedico);
+    List<ConsultaMedicaEntity> buscarConsultasPorUsuarioDeMedico(Long idUsuario);
 }

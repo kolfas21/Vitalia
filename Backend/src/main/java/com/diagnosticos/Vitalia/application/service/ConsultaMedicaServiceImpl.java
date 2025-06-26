@@ -68,12 +68,11 @@ public class ConsultaMedicaServiceImpl implements ConsultaMedicaService {
     }
 
     @Override
-    public List<ConsultaMedicaEntity> buscarConsultasPorMedico(Long idMedico) {
-        if (!medicoRepository.existsById(idMedico)) {
-            throw new EntityNotFoundException("Médico no encontrado con id: " + idMedico);
-        }
+    public List<ConsultaMedicaEntity> buscarConsultasPorUsuarioDeMedico(Long idUsuario) {
+        MedicoEntity medico = medicoRepository.findByUserId(idUsuario)
+                .orElseThrow(() -> new EntityNotFoundException("Médico no encontrado con id de usuario: " + idUsuario));
 
-        return consultaRepository.findByMedico_Id(idMedico);
+        return consultaRepository.findByMedico_Id(medico.getId());
     }
 
 }
