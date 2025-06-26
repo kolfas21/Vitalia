@@ -13,7 +13,7 @@ public class PacienteEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPaciente;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_user", nullable = false)
     private UserEntity user;
 
