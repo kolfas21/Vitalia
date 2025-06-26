@@ -1,0 +1,62 @@
+import { Component, effect, signal, computed } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-consulta-medica',
+  standalone: true,
+  imports: [CommonModule, HttpClientModule, FormsModule],
+  templateUrl: './citas.component.html',
+})
+export class CitasMedicaComponent {
+  constructor(private http: HttpClient) {
+    this.cargarMedicos();
+  }
+
+  medicos = signal<any[]>([]);
+  especialidades = computed(() => [...new Set(this.medicos().map(m => m.especialidad))]);
+  especialidadSeleccionada = signal('');
+  medicosFiltrados = computed(() =>
+    this.medicos().filter(m => m.especialidad === this.especialidadSeleccionada())
+  );
+  medicoSeleccionado = signal<any | null>(null);
+
+  fechaSeleccionada = signal<string>('');
+  horaSeleccionada = signal<string>('');
+  estadoConsulta = signal<string>('');
+
+  horasDisponibles = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00']; // Horas fijas para el ejemplo
+
+  cargarMedicos() {
+    this.http.get<any[]>('http://localhost:8080/api/medicos').subscribe({
+      next: data => this.medicos.set(data),
+      error: err => console.error('Error cargando médicos:', err),
+    });
+  }
+
+  solicitarConsulta() {
+    if (!this.fechaSeleccionada() || !this.horaSeleccionada() || !this.medicoSeleccionado()) {
+      this.estadoConsulta.set('⚠️ Por favor, seleccione médico, fecha y hora.');
+      return;
+    }
+
+    const fechaHora = `${this.fechaSeleccionada()}T${this.horaSeleccionada()}:00`;
+
+    const body = {
+      idUsuario: Number(localStorage.getItem('userId')), // debes tener el ID guardado localmente
+      idMedico: this.medicoSeleccionado().idMedico,
+      fechaConsulta: fechaHora,
+    };
+
+    this.http.post('http://localhost:8080/api/consulta', body).subscribe({
+      next: (resp: any) => {
+        this.estadoConsulta.set(`✅ Consulta registrada: ${resp.nombrePaciente} con ${resp.nombreMedico} el ${new Date(resp.fechaConsulta).toLocaleString()}`);
+      },
+      error: err => {
+        console.error(err);
+        this.estadoConsulta.set('❌ Error al registrar la consulta.');
+      }
+    });
+  }
+}
