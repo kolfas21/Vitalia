@@ -11,4 +11,6 @@ public class ActualizarPacienteDTO {
     private String actividadFisica;
     private Double peso;
     private Double estatura;
+    private String sexo;
+    private String estadoCivil;
 }

@@ -23,7 +23,8 @@ public class UserEntity {
     private LocalDate fechaNacimiento;
     private String rol;
 
-
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private PacienteEntity paciente;
 
     // ... getters y setters
 }

@@ -13,8 +13,8 @@ public class PacienteEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPaciente;
 
-    @OneToOne
-    @JoinColumn(name = "id_user") // CORRECTO
+    @ManyToOne
+    @JoinColumn(name = "id_user", nullable = false)
     private UserEntity user;
 
     private LocalDate fechaNacimiento;

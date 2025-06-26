@@ -1,9 +1,11 @@
 package com.diagnosticos.Vitalia.infrastructure.adapter.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "consulta_medica")
@@ -19,15 +21,17 @@ public class ConsultaMedicaEntity {
     private Long idConsulta;
 
     @Column(name = "fecha_consulta", nullable = false)
-    private LocalDate fechaConsulta;
+    private LocalDateTime fechaHora;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paciente", nullable = false)
-    private PacienteEntity paciente;
+    @Column(name = "fecha_creacion", updatable = false)
+    @CreationTimestamp
+    private LocalDateTime fechaCreacion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", nullable = false)
+    private UserEntity usuario;
+
+    @ManyToOne
     @JoinColumn(name = "id_medico", nullable = false)
     private MedicoEntity medico;
 }
-
-
