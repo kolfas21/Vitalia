@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http'
 import { OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {ConsultasMedicoComponent} from '../../../components/citas-medico/citas-medico';
+import { config } from '../../../../config';
 
 @Component({
   selector: 'app-medico',
@@ -64,7 +65,7 @@ export class MedicoComponent implements OnInit {
       rol: this.rol
     };
 
-    this.http.put(`http://localhost:8080/api/usuarios/actualizar/${this.id}`, updatedUser, { headers })
+    this.http.put(`${config.apiUrl}/api/usuarios/actualizar/${this.id}`, updatedUser, { headers })
       .subscribe({
         next: (res: any) => {
           this.nombre = this.editNombre;

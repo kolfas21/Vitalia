@@ -2,6 +2,7 @@ import { Component, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { config } from '../../../config';
 
 @Component({
   selector: 'app-consulta-medica',
@@ -32,7 +33,7 @@ export class CitasMedicaComponent {
   horasDisponibles = ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
 
   cargarMedicos() {
-    this.http.get<any[]>('http://localhost:8080/api/medicos').subscribe({
+    this.http.get<any[]>(`${config.apiUrl}/api/medicos`).subscribe({
       next: data => this.medicos.set(data),
       error: err => console.error('Error cargando médicos:', err),
     });
@@ -59,7 +60,7 @@ export class CitasMedicaComponent {
 
     console.log('Consulta enviada:', body);
 
-    this.http.post('http://localhost:8080/api/consulta', body).subscribe({
+    this.http.post(`${config.apiUrl}/api/consulta`, body).subscribe({
       next: (resp: any) => {
         this.estadoConsulta.set(
           `✅ Consulta registrada: ${resp.nombrePaciente} con ${resp.nombreMedico} el ${new Date(resp.fechaConsulta).toLocaleString()}`
