@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http'
 import { NgIf } from '@angular/common';
 import {MedicoComponent} from '../../../components/medicos/medico.component';
 import{PacienteComponent} from '../../../components/paciente/paciente.component';
+import { config } from '../../../../config';
 
 
 
@@ -65,7 +66,7 @@ export class InicioAdminComponent implements OnInit {
       rol: this.rol
     };
 
-    this.http.put(`http://localhost:8080/api/usuarios/actualizar/${this.id}`, updatedUser, { headers })
+    this.http.put(`${config.apiUrl}/api/usuarios/actualizar/${this.id}`, updatedUser, { headers })
       .subscribe({
         next: (res: any) => {
           this.nombre = this.editNombre;

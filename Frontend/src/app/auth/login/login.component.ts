@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { config } from '../../../config'; // ✅ Usamos la URL centralizada
+
 
 @Component({
   selector: 'app-login',
@@ -13,6 +15,8 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [CommonModule, ReactiveFormsModule, FormsModule, HttpClientModule]
 })
 export class LoginComponent {
+
+  
   loginForm: FormGroup;
   mensajeRespuesta: string = '';
   rol: string = '';
@@ -45,7 +49,7 @@ export class LoginComponent {
 
     const data = this.loginForm.value;
 
-    this.http.post<any>('http://localhost:8080/api/auth/login', data).subscribe({
+    this.http.post<any>(`${config.apiUrl}/api/auth/login`, data).subscribe({
       next: (response) => {
         this.mensajeRespuesta = response.mensaje;
         this.rol = response.rol;

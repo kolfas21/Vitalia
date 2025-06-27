@@ -2,13 +2,14 @@
   "name": "mi-proyecto",
   "version": "0.0.0",
   "scripts": {
-  "start": "ng serve",
-  "build": "node ./node_modules/@angular/cli/bin/ng build --configuration=production",
-  "watch": "node ./node_modules/@angular/cli/bin/ng build --watch --configuration development",
-  "test": "ng test"
-},
+    "start": "ng serve",
+    "build": "node ./node_modules/@angular/cli/bin/ng build --configuration=production",
+    "watch": "node ./node_modules/@angular/cli/bin/ng build --watch --configuration development",
+    "test": "ng test"
+  },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^19.2.14",
     "@angular/common": "^19.2.0",
     "@angular/compiler": "^19.2.0",
     "@angular/core": "^19.2.0",
@@ -37,7 +38,6 @@
     "typescript": "~5.7.2"
   },
   "engines": {
-  "node": "20.12.2"
-  } 
-
+    "node": "20.12.2"
+  }
 }

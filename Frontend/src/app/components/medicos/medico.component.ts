@@ -4,6 +4,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule, NgIf, NgForOf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { timeout } from 'rxjs/operators';
+import { config } from '../../../config';
 
 export interface Usuario {
   id: number;
@@ -68,7 +69,7 @@ export class MedicoComponent implements OnInit {
       Authorization: `Basic ${btoa('admin@demo.com:admin123')}`
     };
 
-    this.http.get<Medico[]>('http://localhost:8080/api/medicos', { headers }).subscribe({
+    this.http.get<Medico[]>(`${config.apiUrl}/api/medicos`, { headers }).subscribe({
       next: (data) => {
         this.medicos = data;
       },
@@ -92,7 +93,7 @@ export class MedicoComponent implements OnInit {
       Authorization: `Basic ${btoa('admin@demo.com:admin123')}`
     };
 
-    this.http.get<Medico>(`http://localhost:8080/api/medicos/cedula/${this.busquedaCedula}`, { headers }).subscribe({
+    this.http.get<Medico>(`${config.apiUrl}/api/medicos/cedula/${this.busquedaCedula}`, { headers }).subscribe({
       next: (medico) => {
         this.medicos = [medico];
       },
@@ -127,7 +128,7 @@ export class MedicoComponent implements OnInit {
       Authorization: `Basic ${btoa('admin@demo.com:admin123')}`
     };
 
-    this.http.delete(`http://localhost:8080/api/medicos/${id}`, { headers }).subscribe({
+    this.http.delete(`${config.apiUrl}/api/medicos/${id}`, { headers }).subscribe({
       next: () => {
         this.mostrarToast('✅ Médico eliminado correctamente');
         this.obtenerMedicos();
@@ -160,8 +161,8 @@ export class MedicoComponent implements OnInit {
     };
 
     const endpoint = this.editarId
-      ? `http://localhost:8080/api/medicos/${this.editarId}`
-      : 'http://localhost:8080/api/medicos/registrar';
+      ? `${config.apiUrl}/api/medicos/${this.editarId}`
+      : `${config.apiUrl}/api/medicos/registrar`;
 
     const metodo = this.editarId
       ? this.http.put(endpoint, payload, { headers })

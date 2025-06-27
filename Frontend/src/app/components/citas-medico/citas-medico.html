@@ -1,36 +1,344 @@
-<div class="p-4">
-  <h2 class="text-xl font-bold mb-4">Consultas Asignadas</h2>
-
-  <div *ngIf="consultas.length === 0">No hay consultas asignadas.</div>
-
-  <ul class="space-y-3">
-    <li *ngFor="let consulta of consultas" class="p-3 bg-gray-100 rounded shadow">
-      <div>
-        <strong>Paciente:</strong> {{ consulta.nombrePaciente }}<br />
-        <strong>Fecha:</strong> {{ consulta.fechaHora | date:'short' }}
+<div class="p-6 bg-gradient-to-br from-sky-50 to-blue-50 min-h-screen">
+  <!-- Encabezado con efecto glass -->
+  <div class="bg-white/70 backdrop-blur-md rounded-2xl shadow-lg p-6 mb-6 border border-white/30">
+    <h2 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-sky-500 mb-2">
+      Gestión de Consultas Médicas
+    </h2>
+    <p class="text-blue-600/90">Visualiza y gestiona las consultas programadas</p>
+    
+    <!-- Selector de fecha mejorado -->
+    <div class="mt-4 flex items-center gap-4">
+      <div class="flex-1">
+        <label class="block text-sm font-medium text-blue-700 mb-1">Selecciona una fecha:</label>
+        <div class="relative">
+          <input 
+            type="date" 
+            [(ngModel)]="selectedDate" 
+            (change)="actualizarConsultasDelDia()" 
+            class="w-full bg-white/80 border border-blue-200/70 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          />
+          <svg class="absolute right-3 top-2.5 h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
       </div>
-      <button class="mt-2 px-4 py-1 bg-blue-600 text-white rounded" (click)="verDetalle(consulta.idConsulta)">
-        Ver Detalle
+      <button 
+        (click)="selectedDate = today; actualizarConsultasDelDia()" 
+        class="mt-6 px-4 py-2 bg-gradient-to-r from-blue-100 to-sky-100 text-blue-600 rounded-xl border border-blue-200 hover:shadow-md transition-all hover:scale-[1.02]"
+      >
+        Hoy
       </button>
-    </li>
-  </ul>
-
-  <div *ngIf="detalleVisible" class="mt-8 p-4 border rounded bg-white shadow">
-    <h3 class="text-lg font-semibold mb-2">Información Médica</h3>
-    <form [formGroup]="detalleForm" (ngSubmit)="actualizarInfoMedica()">
-      <div class="grid grid-cols-2 gap-4">
-        <div><label>Síntomas</label><input class="w-full border p-1" formControlName="sintomas" /></div>
-        <div><label>Alergias</label><input class="w-full border p-1" formControlName="alergias" /></div>
-        <div><label>Actividad Física</label><input class="w-full border p-1" formControlName="actividadFisica" /></div>
-        <div><label>Ocupación</label><input class="w-full border p-1" formControlName="ocupacion" /></div>
-        <div><label>Peso (kg)</label><input type="number" class="w-full border p-1" formControlName="peso" /></div>
-        <div><label>Estatura (cm)</label><input type="number" class="w-full border p-1" formControlName="estatura" /></div>
-      </div>
-
-      <div class="mt-4 space-x-2">
-        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Actualizar</button>
-        <button type="button" class="px-4 py-2 bg-gray-400 text-white rounded" (click)="cerrarDetalle()">Cancelar</button>
-      </div>
-    </form>
+    </div>
   </div>
+
+  <!-- Paneles de consultas con efecto glass y drag & drop -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Consultas Pendientes -->
+    <div 
+      cdkDropList
+      id="pendientes"
+      [cdkDropListData]="pendientes"
+      (cdkDropListDropped)="moverConsulta($event)"
+      class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border border-white/30 overflow-hidden transition-all duration-300 hover:shadow-2xl"
+    >
+      <div class="bg-gradient-to-r from-blue-500/10 to-blue-600/10 p-4 border-b border-white/20">
+        <h3 class="text-lg font-semibold text-blue-800 flex items-center gap-2">
+          <span class="bg-blue-100 p-2 rounded-lg">⏳</span>
+          Pendientes ({{pendientes.length}})
+        </h3>
+      </div>
+      <div class="p-4 min-h-[300px]">
+        <div *ngIf="pendientes.length === 0" class="text-center py-10 text-blue-400/80">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <p class="mt-2">No hay consultas pendientes</p>
+        </div>
+        <div
+          *ngFor="let consulta of pendientes"
+          cdkDrag
+          class="p-4 mb-3 bg-white/80 backdrop-blur-xs rounded-xl border border-blue-100/50 shadow-sm cursor-move transition-all hover:shadow-md hover:border-blue-200 hover:bg-white"
+        >
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-medium text-blue-900">{{ consulta.nombrePaciente }}</p>
+              <p class="text-sm text-blue-600/90 flex items-center gap-1 mt-1">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ consulta.fechaConsulta | date: 'shortTime' }}
+              </p>
+            </div>
+            <button 
+              (click)="verDetalle(consulta.idConsulta); $event.stopPropagation()"
+              class="px-3 py-1 bg-gradient-to-r from-blue-500 to-sky-400 text-white text-sm rounded-lg shadow-md hover:shadow-lg transition-all hover:scale-105 flex items-center gap-1"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Iniciar
+            </button>
+          </div>
+          <div *ngIf="consulta.motivo" class="mt-2 text-sm text-blue-700/90 bg-blue-50/50 p-2 rounded-lg">
+            {{ consulta.motivo }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consultas Realizadas -->
+    <div 
+      cdkDropList
+      id="realizadas"
+      [cdkDropListData]="realizadas"
+      (cdkDropListDropped)="moverConsulta($event)"
+      class="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border border-white/30 overflow-hidden transition-all duration-300 hover:shadow-2xl"
+    >
+      <div class="bg-gradient-to-r from-green-500/10 to-emerald-600/10 p-4 border-b border-white/20">
+        <h3 class="text-lg font-semibold text-green-800 flex items-center gap-2">
+          <span class="bg-green-100 p-2 rounded-lg">✅</span>
+          Realizadas ({{realizadas.length}})
+        </h3>
+      </div>
+      <div class="p-4 min-h-[300px]">
+        <div *ngIf="realizadas.length === 0" class="text-center py-10 text-green-400/80">
+          <svg class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="mt-2">No hay consultas realizadas</p>
+        </div>
+        <div
+          *ngFor="let consulta of realizadas"
+          cdkDrag
+          class="p-4 mb-3 bg-white/80 backdrop-blur-xs rounded-xl border border-green-100/50 shadow-sm cursor-move transition-all hover:shadow-md hover:border-green-200 hover:bg-white"
+        >
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="font-medium text-green-900">{{ consulta.nombrePaciente }}</p>
+              <p class="text-sm text-green-600/90 flex items-center gap-1 mt-1">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {{ consulta.fechaConsulta | date: 'shortTime' }}
+              </p>
+            </div>
+            <button 
+              (click)="verDetalle(consulta.idConsulta); $event.stopPropagation()"
+              class="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-400 text-white text-sm rounded-lg shadow-md hover:shadow-lg transition-all hover:scale-105 flex items-center gap-1"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              Ver
+            </button>
+          </div>
+          <div *ngIf="consulta.diagnostico" class="mt-2 text-sm text-green-700/90 bg-green-50/50 p-2 rounded-lg">
+          {{ truncateText(consulta.diagnostico, 50) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de Detalle con efecto glass -->
+  <div *ngIf="detalleVisible" class="bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl border border-white/30 p-6 mb-6 animate-fade-in">
+  <!-- Información del paciente (solo lectura) -->
+  <div class="mb-6 bg-blue-50/50 p-4 rounded-xl">
+    <h3 class="text-lg font-semibold text-blue-800 mb-3">Datos del Paciente</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <p class="font-medium text-blue-700">Nombre:</p>
+        <p>{{selectedConsulta?.nombre}}</p>
+      </div>
+      <div>
+        <p class="font-medium text-blue-700">Cédula:</p>
+        <p>{{selectedConsulta?.cedula}}</p>
+      </div>
+      <div>
+        <p class="font-medium text-blue-700">Fecha Nacimiento:</p>
+        <p>{{selectedConsulta?.fechaNacimiento | date:'mediumDate'}}</p>
+      </div>
+      <div>
+        <p class="font-medium text-blue-700">Correo:</p>
+        <p>{{selectedConsulta?.correo}}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulario médico (editables) -->
+  <h3 class="text-xl font-semibold text-blue-800 mb-4">Información Médica</h3>
+    <form [formGroup]="detalleForm" (ngSubmit)="actualizarInfoMedica()" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Campos médicos editables -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-blue-700">Síntomas</label>
+        <textarea 
+          formControlName="sintomas" 
+          rows="2"
+          class="w-full bg-white/90 border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          [class.bg-gray-100]="!!selectedConsulta?.sintomas"
+          [readonly]="!!selectedConsulta?.sintomas"
+        ></textarea>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-blue-700">Alergias</label>
+        <textarea 
+          formControlName="alergias" 
+          rows="2"
+          class="w-full bg-white/90 border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          [class.bg-gray-100]="!!selectedConsulta?.alergias"
+          [readonly]="!!selectedConsulta?.alergias"
+        ></textarea>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-blue-700">Actividad Física</label>
+        <select 
+          formControlName="actividadFisica" 
+          class="w-full bg-white/90 border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          [class.bg-gray-100]="!!selectedConsulta?.actividadFisica"
+          [disabled]="!!selectedConsulta?.actividadFisica"
+        >
+          <option value="">Seleccionar...</option>
+          <option value="sedentario">Sedentario</option>
+          <option value="ligera">Ligera</option>
+          <option value="moderada">Moderada</option>
+          <option value="intensa">Intensa</option>
+        </select>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-blue-700">Ocupación</label>
+        <input 
+          formControlName="ocupacion" 
+          class="w-full bg-white/90 border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          [class.bg-gray-100]="selectedConsulta?.ocupacion"
+          [readonly]="selectedConsulta?.ocupacion"
+        >
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-blue-700">Peso (kg)</label>
+        <input 
+          type="number" 
+          formControlName="peso" 
+          class="w-full bg-white/90 border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          [class.bg-gray-100]="selectedConsulta?.peso"
+          [readonly]="selectedConsulta?.peso"
+        >
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-blue-700">Estatura (cm)</label>
+        <input 
+          type="number" 
+          formControlName="estatura" 
+          class="w-full bg-white/90 border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+          [class.bg-gray-100]="selectedConsulta?.estatura"
+          [readonly]="selectedConsulta?.estatura"
+        >
+      </div>
+
+      <!-- Campo de diagnóstico (siempre editable) -->
+
+    </div>
+
+    <div class="flex justify-end gap-3 pt-4">
+      <button type="button" (click)="cerrarDetalle()" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl shadow-sm hover:bg-gray-50 transition-all hover:shadow-md">
+        Cancelar
+      </button>
+      <button 
+        type="submit" 
+        class="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-sky-400 text-white rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.02] flex items-center gap-2"
+        [disabled]="!detalleForm.valid"
+      >
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        Guardar consulta
+      </button>
+    </div>
+  </form>
+
+
+
+  <!-- Dentro del panel de detalle, después del formulario médico -->
+<div *ngIf="puedeGenerarDiagnostico" class="mt-6 bg-blue-50/30 ...">
+    <h3 class="text-lg font-semibold text-blue-800 mb-3">Generar Diagnóstico</h3>
+  
+  <div class="mb-4">
+    <label class="block text-sm font-medium text-blue-700 mb-2">Síntomas (separados por comas)</label>
+    <textarea 
+      [(ngModel)]="sintomasParaDiagnostico" 
+      class="w-full bg-white border border-blue-200 rounded-xl py-2 px-4 text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm"
+      rows="3"
+      placeholder="Ejemplo: dolor de cabeza, mareo, visión borrosa"
+    ></textarea>
+  </div>
+  
+  <button 
+    (click)="generarDiagnostico()"
+    class="px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-400 text-white rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.02] flex items-center gap-2"
+  >
+    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    Generar Diagnóstico
+  </button>
+
+
+  <!-- Agrega esto después del botón de Generar Diagnóstico -->
+<div *ngIf="mostrarDiagnostico" class="mt-4 bg-green-50/30 p-4 rounded-xl border border-green-200">
+  <h4 class="font-medium text-green-800 mb-2">Diagnóstico Generado:</h4>
+  <p class="text-green-700 whitespace-pre-line">{{ diagnosticoGenerado }}</p>
+</div>
+
+
+
+<div *ngIf="mostrarDiagnostico && diagnosticoCompleto" class="mt-4 p-4 border rounded-xl shadow-md bg-white text-gray-800">
+  <h3 class="text-xl font-bold text-blue-700 mb-3">🩺 Diagnóstico Médico</h3>
+
+  <div class="mb-2">
+    <p><strong>📅 Fecha:</strong> {{ diagnosticoCompleto.fecha }}</p>
+    <p><strong>💡 Condición:</strong> {{ diagnosticoCompleto.condicion }}</p>
+  </div>
+
+  <div class="mb-2">
+    <h4 class="font-semibold">🧍 Paciente:</h4>
+    <ul class="list-disc list-inside">
+      <li><strong>ID:</strong> {{ selectedConsulta?.cedula }}</li>
+      <li><strong>Nombre:</strong> {{ selectedConsulta?.nombrePaciente }}</li>
+      <li><strong>Edad:</strong> {{ calcularEdad(selectedConsulta?.fechaNacimiento || '') }} años</li>
+      <li><strong>Género:</strong> {{ selectedConsulta?.genero }}</li>
+    </ul>
+  </div>
+
+  <div class="mb-2">
+    <h4 class="font-semibold">🩻 Síntomas Presentados:</h4>
+    <ul class="list-disc list-inside">
+      <li *ngFor="let sintoma of diagnosticoCompleto.sintomas">{{ sintoma }}</li>
+    </ul>
+  </div>
+
+  <div class="mb-2">
+    <h4 class="font-semibold">💊 Medicamentos Recomendados:</h4>
+    <ul class="list-disc list-inside">
+      <li *ngFor="let med of diagnosticoCompleto.recomendacion.medicamentos">
+        {{ med.nombre }} - {{ med.dosis }} - {{ med.frecuencia }}
+      </li>
+    </ul>
+  </div>
+
+  <div class="mb-2">
+    <p><strong>🛌 Incapacidad:</strong> {{ diagnosticoCompleto.recomendacion.incapacidad }}</p>
+  </div>
+</div>
+
+</div>
+</div>
+
+
+
 </div>
