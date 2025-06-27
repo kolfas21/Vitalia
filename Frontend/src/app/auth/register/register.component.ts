@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { config } from '../../../config';
 
 @Component({
   selector: 'app-register',
@@ -49,7 +50,7 @@ onSubmit(): void {
     genero: formData.genero
   };
 
-  this.http.post('http://localhost:8080/api/usuarios/registrar', dataToSend).subscribe({
+  this.http.post(`${config.apiUrl}/api/usuarios/registrar`, dataToSend).subscribe({
     next: res => {
       alert('¡Registro exitoso!');
       this.registerForm.reset();

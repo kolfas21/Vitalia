@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { config } from '../../../config';
 
 @Component({
   selector: 'app-paciente',
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class PacienteComponent implements OnInit {
   pacientes: any[] = [];
   cedulaBusqueda: string = '';
-  apiUrl = 'http://localhost:8080/api/usuarios';
+  apiUrl = `${config.apiUrl}/api/usuarios`;
   mensaje: string = '';
   error: string = '';
 
