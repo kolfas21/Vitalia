@@ -26,7 +26,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/diagnostico")
 @RequiredArgsConstructor
-public class  DiagnosticoController {
+public class DiagnosticoController {
 
     private final DiagnosticoContext diagnosticoContext;
 

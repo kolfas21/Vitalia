@@ -14,7 +14,7 @@ public class PacienteEntity {
     private Long idPaciente;
 
     @OneToOne
-    @JoinColumn(name = "id_user", nullable = false)
+    @JoinColumn(name = "id_user") // CORRECTO
     private UserEntity user;
 
     private LocalDate fechaNacimiento;

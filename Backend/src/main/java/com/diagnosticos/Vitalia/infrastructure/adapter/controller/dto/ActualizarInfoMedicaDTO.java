@@ -8,7 +8,4 @@ public class ActualizarInfoMedicaDTO {
     private String actividadFisica;
     private String alergias;
     private String sintomas;
-    private String ocupacion;
-    private String sexo;
-    private String estadoCivil;
 }

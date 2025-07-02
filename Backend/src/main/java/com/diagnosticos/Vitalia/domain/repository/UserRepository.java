@@ -14,4 +14,3 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByCedula(String cedula);
 
 }
-

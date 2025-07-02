@@ -73,7 +73,7 @@ export class MedicoComponent implements OnInit {
       next: (data) => {
         this.medicos = data;
       },
-      error: () => {
+      error: () => { 
         this.medicos = [];
         this.mostrarToast('❌ Error al obtener médicos', true);
       },
@@ -123,12 +123,12 @@ export class MedicoComponent implements OnInit {
     this.obtenerMedicos();
   }
 
-  eliminarMedico(id: number): void {
+  eliminarMedico(idMedico: number): void {
     const headers = {
       Authorization: `Basic ${btoa('admin@demo.com:admin123')}`
     };
 
-    this.http.delete(`${config.apiUrl}/api/medicos/${id}`, { headers }).subscribe({
+    this.http.delete(`${config.apiUrl}/api/medicos/${idMedico}`, { headers }).subscribe({
       next: () => {
         this.mostrarToast('✅ Médico eliminado correctamente');
         this.obtenerMedicos();
